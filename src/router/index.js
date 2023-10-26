@@ -1,0 +1,39 @@
+import Vue from "vue";
+import VueRouter from "vue-router";
+import SettingsPage from "@/views/SettingsPage.vue";
+
+Vue.use(VueRouter);
+
+const routes = [
+  {
+    path: "/",
+    name: "circulars",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/TemplatesView.vue"),
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: SettingsPage,
+  },
+  {
+    path: "/template",
+    name: "TemplatePreview",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/TemplatePreview.vue"),
+  },
+  {
+    path: "/newtemplate",
+    name: "CreateTemplates",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/CreateTemplates.vue"),
+  },
+];
+
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes,
+});
+
+export default router;
