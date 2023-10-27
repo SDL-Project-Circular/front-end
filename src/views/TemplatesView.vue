@@ -28,7 +28,7 @@
     </v-card>
     <router-link to="/newtemplate">
       <div class="position-fixed bottom-0 end-0 mx-3 mb-3">
-        <v-btn fab x-large dark elevation="30" color="indigo">
+        <v-btn fab x-large dark elevation="30" color="black">
           <v-icon dark> mdi-plus </v-icon>
         </v-btn>
       </div>
@@ -65,7 +65,12 @@ export default {
     createCard: async function () {
       try {
         const response = await axios.get("http://127.0.0.1:5000/templates");
-        this.info = response.data;
+        console.log(response.data.status == "no");
+        if (response.data.status == "no") {
+          this.info = [];
+        } else {
+          this.info = response.data;
+        }
       } catch (error) {
         console.log(error);
       }

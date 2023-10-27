@@ -32,83 +32,82 @@
       <hr style="margin: 0px" />
       <form id="myForm">
         <div class="container" style="margin-top: 10px">
-          <label style="margin-left: 530px">Date : </label>
-          <input name="date" type="date" v-model="forms.date" required />
-          <br /><br />
-          <label style="font-size: 120%">Ref.no </label>
-          <input name="ref" type="text" v-model="forms.ref" required />
-          <br />
-          <br />
+          <v-row>
+            <v-col cols="8"> </v-col>
+            <v-col cols="4">
+              <FrontendDatePicker />
+            </v-col>
+          </v-row>
+          <v-text-field
+            name="ref"
+            label="Ref.no"
+            v-model="forms.ref"
+            style="width: 25%"
+            :rules="rules"
+            outlined
+          ></v-text-field>
           <div>
-            <label style="font-size: 120%">From</label>
-            <br />
-            <textarea
+            <v-textarea
+              solo
+              class="address"
               name="from"
-              style="margin-left: 40px"
-              rows="7"
-              cols="40"
+              label="FROM"
               v-model="forms.from"
-              required
-            ></textarea>
+              :rules="rules"
+            ></v-textarea>
           </div>
           <div>
-            <label style="font-size: 120%">To</label>
-            <br />
-            <textarea
+            <v-textarea
+              solo
               name="to"
-              style="margin-left: 40px"
-              rows="7"
-              cols="40"
+              class="address"
               v-model="forms.to"
-              required
-            ></textarea>
+              label="TO"
+              :rules="rules"
+            ></v-textarea>
           </div>
           <label style="font-size: 120%">Dear Sir/Madam,</label>
-          <textarea
+          <br />
+          <br />
+          <v-text-field
+            solo
             name="subject"
             class="content"
-            rows="4"
-            cols="70"
             v-model="forms.subject"
             placeholder="Enter Subject"
-            required
-          ></textarea>
-          <textarea
+            :rules="rules"
+            style="width: 70%; margin-left: 10%"
+          ></v-text-field>
+          <v-textarea
+            solo
             name="body"
             class="content"
             placeholder="Enter the letter body"
-            rows="10"
-            cols="70"
             v-model="forms.body"
-            required
-          ></textarea>
-          <br />
-          <br />
-          <textarea
+            :rules="rules"
+          ></v-textarea>
+          <v-textarea
+            solo
             name="signoff"
-            style="float: right; margin-right: 80px"
-            rows="3"
-            cols="20"
+            style="float: right; margin-right: 10px"
             v-model="forms.sign_off"
             placeholder="sign-off"
-            required
-          ></textarea>
-          <br />
-          <label style="font-size: 120%">Copy To:</label>
-          <br />
-          <textarea
+            :rules="rules"
+          ></v-textarea>
+          <v-textarea
+            solo
             name="copyto"
-            rows="6"
-            cols="20"
+            class="address"
             v-model="forms.copy_to"
-            required
-          ></textarea>
+            placeholder="Copy to"
+            :rules="rules"
+          ></v-textarea>
         </div>
         <br />
         <button
           @click="generate"
           id="submit"
-          type="button"
+          type="submit"
           class="btn btn-primary"
           style="margin-left: 45%; margin-bottom: 40px"
         >
@@ -122,10 +121,12 @@
 <script>
 import axios from "axios";
 import PresistentModelVue from "@/components/PersistentModel.vue";
+import FrontendDatePicker from "@/components/DatePicker.vue";
 export default {
-  components: { PresistentModelVue },
+  components: { PresistentModelVue, FrontendDatePicker },
   data() {
     return {
+      rules: [(value) => !!value || "Required!"],
       forms: {
         date: "",
         ref: "",
@@ -143,26 +144,42 @@ export default {
 
   methods: {
     generate: async function () {
-      await axios
-        .post("http://127.0.0.1:5000/generate", this.forms, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          if (res.data.status === "Failed") {
-            window.location = "/settings";
-          } else if (res.data.status === "Success") {
-            window.location = "/template?id=" + res.data.id;
-            console.log(res.data.id);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          //Perform action in always
-        });
+      this.refName();
+      // await axios
+      //   .post("http://127.0.0.1:5000/generate", this.forms, {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   })
+      //   .then((res) => {
+      //     if (res.data.status === "Failed") {
+      //       window.location = "/settings";
+      //     } else if (res.data.status === "Success") {
+      //       window.location = "/template?id=" + res.data.id;
+      //       console.log(res.data.id);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   })
+      //   .finally(() => {
+      //     //Perform action in always
+      //   });
+    },
+    refName: async function () {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:5000/templates?ref_no=" + this.forms.ref
+        );
+        console.log(response.data.status);
+        // if (response.data.status == "no") {
+        //   this.info = [];
+        // } else {
+        //   this.info = response.data;
+        // }
+      } catch (error) {
+        console.log(error);
+      }
     },
     handleChildData(data) {
       this.forms.template_name = data;
