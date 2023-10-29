@@ -37,5 +37,10 @@ export default {
       menu: false,
     };
   },
+  watch: {
+    date: function () {
+      this.$emit("dateAdd", this.date);
+    },
+  },
 };
 </script>

@@ -35,7 +35,7 @@
           <v-row>
             <v-col cols="8"> </v-col>
             <v-col cols="4">
-              <FrontendDatePicker />
+              <FrontendDatePicker @dateAdd="handleDate" />
             </v-col>
           </v-row>
           <v-text-field
@@ -107,7 +107,7 @@
         <button
           @click="generate"
           id="submit"
-          type="submit"
+          type="button"
           class="btn btn-primary"
           style="margin-left: 45%; margin-bottom: 40px"
         >
@@ -144,27 +144,26 @@ export default {
 
   methods: {
     generate: async function () {
-      this.refName();
-      // await axios
-      //   .post("http://127.0.0.1:5000/generate", this.forms, {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   })
-      //   .then((res) => {
-      //     if (res.data.status === "Failed") {
-      //       window.location = "/settings";
-      //     } else if (res.data.status === "Success") {
-      //       window.location = "/template?id=" + res.data.id;
-      //       console.log(res.data.id);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   })
-      //   .finally(() => {
-      //     //Perform action in always
-      //   });
+      try {
+        const res = await axios.post(
+          "http://127.0.0.1:5000/generate",
+          this.forms,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(res);
+        if (res.data.status === "failed") {
+          window.location = "/settings";
+        } else if (res.data.status === "success") {
+          window.location = "/template?id=" + res.data.id;
+          console.log(res.data.id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     refName: async function () {
       try {
@@ -183,6 +182,9 @@ export default {
     },
     handleChildData(data) {
       this.forms.template_name = data;
+    },
+    handleDate(dateAdd) {
+      this.forms.date = dateAdd;
     },
   },
 };
