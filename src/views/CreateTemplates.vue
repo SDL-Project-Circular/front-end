@@ -48,6 +48,7 @@
           ></v-text-field>
           <div>
             <v-textarea
+              auto-grow
               solo
               class="address"
               name="from"
@@ -58,6 +59,7 @@
           </div>
           <div>
             <v-textarea
+              auto-grow
               solo
               name="to"
               class="address"
@@ -69,16 +71,36 @@
           <label style="font-size: 120%">Dear Sir/Madam,</label>
           <br />
           <br />
-          <v-text-field
+          <v-textarea
             solo
+            auto-grow
             name="subject"
             class="content"
             v-model="forms.subject"
             placeholder="Enter Subject"
             :rules="rules"
             style="width: 70%; margin-left: 10%"
-          ></v-text-field>
+            rows="1"
+          ></v-textarea>
+          <v-select
+            style="width: 40%"
+            clearable
+            :rules="rules"
+            chips
+            label="Data"
+            :items="[
+              'California',
+              'Colorado',
+              'Florida',
+              'Georgia',
+              'Texas',
+              'Wyoming',
+            ]"
+            multiple
+            variant="solo"
+          ></v-select>
           <v-textarea
+            auto-grow
             solo
             name="body"
             class="content"
@@ -87,6 +109,7 @@
             :rules="rules"
           ></v-textarea>
           <v-textarea
+            auto-grow
             solo
             name="signoff"
             style="float: right; margin-right: 10px"
@@ -95,6 +118,7 @@
             :rules="rules"
           ></v-textarea>
           <v-textarea
+            auto-grow
             solo
             name="copyto"
             class="address"
@@ -104,18 +128,20 @@
           ></v-textarea>
         </div>
         <br />
-        <button
-          @click="generate"
-          id="submit"
-          type="button"
-          class="btn btn-primary"
-          style="margin-left: 45%; margin-bottom: 40px"
-        >
-          Generate
-        </button>
       </form>
     </div>
     <PresistentModelVue @circular_name="handleChildData" />
+    <v-btn
+      depressed
+      color="primary"
+      @click="generate"
+      id="submit"
+      type="button"
+      class="btn btn-primary"
+      style="margin-left: 45%; margin-bottom: 40px"
+    >
+      Generate
+    </v-btn>
   </div>
 </template>
 <script>

@@ -17,7 +17,7 @@
         <v-spacer></v-spacer>
         <v-card-actions>
           <v-btn
-            color="#FF5252"
+            color="#FF5253"
             @click="deleteCard(i.template_id)"
             elevation="10"
           >

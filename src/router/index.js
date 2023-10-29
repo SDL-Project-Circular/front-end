@@ -9,7 +9,7 @@ const routes = [
     path: "/",
     name: "circulars",
     component: () =>
-      import(/* webpackChunkName: "templates" */ "@/views/TemplatesView.vue"),
+      import(/* webpackChunkName: "templates" */ "@/views/HomePage.vue"),
   },
   {
     path: "/settings",
@@ -27,6 +27,12 @@ const routes = [
     name: "CreateTemplates",
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/CreateTemplates.vue"),
+  },
+  {
+    path: "/templatepage",
+    name: "templatepage",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/TemplatesView.vue"),
   },
 ];
 

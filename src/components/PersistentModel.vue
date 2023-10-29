@@ -8,30 +8,30 @@
     >
       <v-card>
         <v-card-title class="text-h4 grey lighten-2"
-          >Circular Name</v-card-title
+          >Template Name</v-card-title
         >
         <v-card-text class="mt-4 pb-2">
-          <v-text-field
-            v-model="circular_name"
-            label="Enter the circular name here"
-            :rules="rules"
-          ></v-text-field>
+          <v-form ref="form" lazy-validation @submit.prevent>
+            <v-text-field
+              v-model="circular_name"
+              label="Enter the template name here"
+              :rules="rules"
+            ></v-text-field>
+          </v-form>
           <p style="color: red" class="m-0">
             {{ error }}
           </p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="justify-end pt-0 pb-3">
-          <v-btn type="submit" color="primary" text @click="tempName">
-            Save
-          </v-btn>
+          <v-btn type="button" color="primary" @click="clicker"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
 </template>
 <script>
-import { useVuelidate } from "@vuelidate/core";
+// import { useVuelidate } from "@vuelidate/core";
 import axios from "axios";
 export default {
   data() {
@@ -39,6 +39,7 @@ export default {
       rules: [
         (value) => !!value || "Required!",
         (value) => (value && value.length >= 3) || "Min 3 characters",
+        (value) => this.tempName(value) || "Template name exists!",
       ],
       circular_name: "",
       dialog: true,
@@ -61,35 +62,19 @@ export default {
         console.log(error);
       }
     },
-    tempName: function () {
-      this.v = useVuelidate(this.rules, this.circular_name);
-      let temp = true;
-      for (let j = 0; j < this.rules.length; j++) {
-        if (this.v[j].$response !== true) {
-          temp = false;
-          break;
-        }
-      }
-      if (temp === true) {
-        this.dummy = true;
-        for (var j = 0; j < this.info.length; j++) {
-          if (this.info[j].template_name === this.circular_name) {
-            this.dummy = false;
-            this.error = "Name already exists!";
-            this.errorOccured();
-            break;
-          }
-        }
-        if (this.dummy === true) {
-          this.$emit("circular_name", this.circular_name);
-          this.dialog = false;
-        }
+    clicker: function () {
+      if (this.$refs.form.validate()) {
+        this.$emit("circular_name", this.circular_name);
+        this.dialog = false;
       }
     },
-    errorOccured: async function () {
-      setTimeout(() => {
-        this.error = "";
-      }, 2000);
+    tempName: function (value) {
+      for (var j = 0; j < this.info.length; j++) {
+        if (this.info[j].template_name === value) {
+          return false;
+        }
+      }
+      return true;
     },
   },
 };

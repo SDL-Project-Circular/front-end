@@ -2,7 +2,7 @@
   <nav
     id="nav"
     class="navbar navbar-expand-md navbar-light py-4 mb-3"
-    style="background-color: lightseagreen"
+    style="background-color: #86a789"
   >
     <div class="container-fluid">
       <button
@@ -20,6 +20,9 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-center">
           <li class="nav-item">
             <router-link class="icon" to="/">Home</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="icon" to="/templatepage">Template</router-link>
           </li>
           <li class="nav-item">
             <router-link class="icon" to="/settings">Settings</router-link>

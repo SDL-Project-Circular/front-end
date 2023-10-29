@@ -28,12 +28,9 @@
 <script>
 export default {
   name: "FrontendDatePicker",
-
   data() {
     return {
-      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
+      date: "",
       menu: false,
     };
   },
@@ -41,6 +38,11 @@ export default {
     date: function () {
       this.$emit("dateAdd", this.date);
     },
+  },
+  mounted() {
+    this.date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10);
   },
 };
 </script>
