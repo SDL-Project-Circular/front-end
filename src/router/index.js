@@ -18,9 +18,9 @@ const routes = [
   },
   {
     path: "/template",
-    name: "TemplatePreview",
+    name: "UseTemplate",
     component: () =>
-      import(/* webpackChunkName: "templates" */ "@/views/TemplatePreview.vue"),
+      import(/* webpackChunkName: "templates" */ "@/views/UseTemplate.vue"),
   },
   {
     path: "/newtemplate",

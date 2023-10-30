@@ -1,6 +1,6 @@
 <template>
   <div class="templates container">
-    <h1 style="text-align: center" class="mb-4">Circulars</h1>
+    <h1 style="text-align: center" class="mb-4">Templates</h1>
     <v-card
       elevation="10"
       class="mx-auto mb-3"
@@ -11,7 +11,7 @@
     >
       <v-card-title
         ><router-link
-          :to="{ name: 'TemplatePreview', query: { id: i.template_id } }"
+          :to="{ name: 'UseTemplate', query: { id: i.template_id } }"
         >
           {{ index + 1 }}. {{ i.template_name | capitalize }}
         </router-link>
