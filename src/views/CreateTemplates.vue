@@ -30,14 +30,14 @@
         </div>
       </nav>
       <hr style="margin: 0px" />
-      <form id="myForm">
-        <div class="container" style="margin-top: 10px">
-          <v-row>
-            <v-col cols="8"> </v-col>
-            <v-col cols="4">
-              <FrontendDatePicker @dateAdd="handleDate" />
-            </v-col>
-          </v-row>
+      <div class="container" style="margin-top: 10px">
+        <v-row>
+          <v-col cols="8"> </v-col>
+          <v-col cols="4">
+            <FrontendDatePicker @dateAdd="handleDate" />
+          </v-col>
+        </v-row>
+        <v-form ref="form" lazy-validation @submit.prevent>
           <v-text-field
             name="ref"
             label="Ref.no"
@@ -85,17 +85,11 @@
           <v-select
             style="width: 40%"
             clearable
+            v-model="selected"
             :rules="rules"
             chips
             label="Data"
-            :items="[
-              'California',
-              'Colorado',
-              'Florida',
-              'Georgia',
-              'Texas',
-              'Wyoming',
-            ]"
+            :items="Object.keys(options)"
             multiple
             variant="solo"
           ></v-select>
@@ -126,9 +120,9 @@
             placeholder="Copy to"
             :rules="rules"
           ></v-textarea>
-        </div>
-        <br />
-      </form>
+        </v-form>
+      </div>
+      <br />
     </div>
     <PresistentModelVue @circular_name="handleChildData" />
     <v-btn
@@ -163,13 +157,26 @@ export default {
         sign_off: "",
         copy_to: "",
         template_name: "",
+        selectedOptions: {},
+      },
+      selected: [],
+      options: {
+        Date: "occurence_date",
+        Venue: "venue",
+        StartingDate: "starting_time",
+        Endingdate: "ending_time",
       },
     };
   },
-  mounted() {},
+  mounted() {
+    this.initialFalseSetter();
+  },
 
   methods: {
     generate: async function () {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
       try {
         const res = await axios.post(
           "http://127.0.0.1:5000/generate",
@@ -185,23 +192,7 @@ export default {
           window.location = "/settings";
         } else if (res.data.status === "success") {
           window.location = "/template?id=" + res.data.id;
-          console.log(res.data.id);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    refName: async function () {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:5000/templates?ref_no=" + this.forms.ref
-        );
-        console.log(response.data.status);
-        // if (response.data.status == "no") {
-        //   this.info = [];
-        // } else {
-        //   this.info = response.data;
-        // }
       } catch (error) {
         console.log(error);
       }
@@ -211,6 +202,20 @@ export default {
     },
     handleDate(dateAdd) {
       this.forms.date = dateAdd;
+    },
+    initialFalseSetter: function () {
+      for (const key in this.options) {
+        this.forms.selectedOptions[this.options[key]] = false;
+      }
+    },
+  },
+  watch: {
+    selected() {
+      this.forms.selectedOptions = {};
+      this.initialFalseSetter();
+      this.selected.forEach((option) => {
+        this.forms.selectedOptions[this.options[option]] = true;
+      });
     },
   },
 };

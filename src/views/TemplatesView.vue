@@ -2,9 +2,10 @@
   <div class="templates container">
     <h1 style="text-align: center" class="mb-4">Circulars</h1>
     <v-card
-      elevation="2"
+      elevation="10"
       class="mx-auto mb-3"
       max-width="600"
+      outlined
       v-for="(i, index) in info.slice().reverse()"
       :key="i.template_id"
     >
@@ -17,9 +18,9 @@
         <v-spacer></v-spacer>
         <v-card-actions>
           <v-btn
-            color="#FF5253"
+            class="white--text"
+            color="#f03949"
             @click="deleteCard(i.template_id)"
-            elevation="10"
           >
             Delete
           </v-btn>
@@ -65,7 +66,6 @@ export default {
     createCard: async function () {
       try {
         const response = await axios.get("http://127.0.0.1:5000/templates");
-        console.log(response.data.status == "no");
         if (response.data.status == "no") {
           this.info = [];
         } else {
@@ -82,6 +82,8 @@ export default {
         );
         if (response.data.status == "success") {
           this.createCard();
+        } else {
+          console.log(response.data.status);
         }
       } catch (error) {
         console.log(error);
