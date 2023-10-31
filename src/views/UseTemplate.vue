@@ -43,25 +43,26 @@
             label="Ref.no"
             v-model="info.ref_no"
             style="width: 25%"
+            :rules="rules"
             outlined
           ></v-text-field>
           <div>
+            <h5>FROM</h5>
             <v-textarea
               auto-grow
               class="address"
               name="from"
-              label="FROM"
               v-model="info.from_address"
               outlined
               disabled
             ></v-textarea>
           </div>
           <div>
+            <h5>TO</h5>
             <v-textarea
               auto-grow
               name="to"
               class="address"
-              label="TO"
               outlined
               v-model="info.to_address"
               disabled
@@ -91,11 +92,13 @@
             v-model="info.body"
             disabled
           ></v-textarea>
+          <h5 style="float: right; margin-right: 13%">SIGN OFF</h5>
+          <h5>COPY TO</h5>
           <v-textarea
             auto-grow
             solo
             name="signoff"
-            style="float: right; margin-right: 10px"
+            style="float: right; margin-right: 0.5%"
             placeholder="sign-off"
             v-model="info.sign_off"
             disabled
@@ -114,11 +117,9 @@
       </div>
       <br />
     </div>
-    <PresistentModelVue @circular_name="handleChildData" />
     <v-btn
       depressed
       color="primary"
-      @click="generate"
       id="submit"
       type="button"
       class="btn btn-primary"
@@ -131,13 +132,20 @@
 
 <script>
 import axios from "axios";
+import FrontendDatePicker from "@/components/DatePicker.vue";
 export default {
   name: "FrontendTemplatePreview",
-
+  components: { FrontendDatePicker },
   data() {
     return {
       info: [],
+      rules: [(value) => !!value || "Required!"],
+      ref_info: [],
+      date: "",
     };
+  },
+  mounted() {
+    this.loader();
   },
   methods: {
     loader: async function () {
@@ -145,21 +153,28 @@ export default {
         const response = await axios.get(
           "http://127.0.0.1:5000/generate?id=" + this.$route.query.id
         );
-        console.log(response);
         this.info = response.data;
+        this.info.date = this.date;
+        const res = await axios.get("http://127.0.0.1:5000/generate");
+        this.ref_info = res.data;
       } catch (error) {
         console.log(error);
       }
     },
-    handleChildData(data) {
-      this.forms.template_name = data;
-    },
     handleDate(dateAdd) {
-      this.forms.date = dateAdd;
+      this.date = dateAdd;
     },
-  },
-  mounted() {
-    this.loader();
+    getData: async function () {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/generate");
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    checkRef: function () {
+      console.log();
+    },
   },
 };
 </script>

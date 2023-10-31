@@ -31,21 +31,7 @@
       </nav>
       <hr style="margin: 0px" />
       <div class="container" style="margin-top: 10px">
-        <v-row>
-          <v-col cols="8"> </v-col>
-          <v-col cols="4">
-            <FrontendDatePicker @dateAdd="handleDate" />
-          </v-col>
-        </v-row>
         <v-form ref="form" lazy-validation @submit.prevent>
-          <v-text-field
-            name="ref"
-            label="Ref.no"
-            v-model="forms.ref"
-            style="width: 25%"
-            :rules="rules"
-            outlined
-          ></v-text-field>
           <div>
             <v-textarea
               auto-grow
@@ -141,14 +127,13 @@
 <script>
 import axios from "axios";
 import PresistentModelVue from "@/components/PersistentModel.vue";
-import FrontendDatePicker from "@/components/DatePicker.vue";
 export default {
-  components: { PresistentModelVue, FrontendDatePicker },
+  components: { PresistentModelVue },
   data() {
     return {
       rules: [(value) => !!value || "Required!"],
+      ref_rules: [(value) => !!value || "Required!"],
       forms: {
-        date: "",
         ref: "",
         from: "",
         to: "",
@@ -166,6 +151,7 @@ export default {
         StartingTime: "starting_time",
         EndingTime: "ending_time",
       },
+      info: [],
     };
   },
   mounted() {
@@ -191,7 +177,7 @@ export default {
         if (res.data.status === "failed") {
           window.location = "/settings";
         } else if (res.data.status === "success") {
-          window.location = "/template?id=" + res.data.id;
+          window.location = "/templatepage";
         }
       } catch (error) {
         console.log(error);
