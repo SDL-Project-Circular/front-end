@@ -82,7 +82,11 @@
             rows="1"
             disabled
           ></v-textarea>
-          <v-text-field v-if="info.venue" label="Venue"> </v-text-field>
+          <v-text-field
+            v-if="info.venue"
+            label="Venue"
+            v-model="info.venue"
+          ></v-text-field>
           <v-textarea
             auto-grow
             solo
@@ -123,6 +127,7 @@
       id="submit"
       type="button"
       class="btn btn-primary"
+      @click="generate"
       style="margin-left: 45%; margin-bottom: 40px"
     >
       Done
@@ -134,17 +139,33 @@
 import axios from "axios";
 import FrontendDatePicker from "@/components/DatePicker.vue";
 export default {
-  name: "FrontendTemplatePreview",
+  name: "UseTemplate",
   components: { FrontendDatePicker },
   data() {
     return {
-      info: [],
-      rules: [(value) => !!value || "Required!"],
+      info: {
+        from_address: "",
+        to_address: "",
+        subject: "",
+        body: "",
+        sign_off: "",
+        copy_to: "",
+        date: "",
+        ref: "",
+        occurence_date: null,
+        venue: "",
+        starting_time: null,
+        ending_time: null,
+      },
+      rules: [
+        (value) => !!value || "Required!",
+        () => this.checkRef() || "Reference ID already exists!",
+      ],
       ref_info: [],
       date: "",
     };
   },
-  mounted() {
+  created() {
     this.loader();
   },
   methods: {
@@ -153,10 +174,38 @@ export default {
         const response = await axios.get(
           "http://127.0.0.1:5000/generate?id=" + this.$route.query.id
         );
-        this.info = response.data;
-        this.info.date = this.date;
-        const res = await axios.get("http://127.0.0.1:5000/generate");
-        this.ref_info = res.data;
+        // console.log(response.data);
+        for (const i of Object.keys(response.data)) {
+          if (response.data[i] !== true && response.data[i] !== false) {
+            this.info[i] = response.data[i];
+          }
+          this.info.date = this.date;
+        }
+        const res = await axios.get("http://127.0.0.1:5000/circular");
+        if (res.data.status !== "no") {
+          this.ref_info = res.data;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    generate: async function () {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+      try {
+        const res = await axios.post(
+          "http://127.0.0.1:5000/circular",
+          JSON.stringify(this.info),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (res.data.status === "success") {
+          window.location = "/circular?id=" + res.data.circular_id;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -164,16 +213,16 @@ export default {
     handleDate(dateAdd) {
       this.date = dateAdd;
     },
-    getData: async function () {
-      try {
-        const response = await axios.get("http://127.0.0.1:5000/generate");
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    },
     checkRef: function () {
-      console.log();
+      if (this.ref_info === null) {
+        return true;
+      }
+      for (const i of this.ref_info) {
+        if (i.ref_no === this.info.ref_no) {
+          return false;
+        }
+      }
+      return true;
     },
   },
 };

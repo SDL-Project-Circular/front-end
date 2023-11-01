@@ -132,9 +132,7 @@ export default {
   data() {
     return {
       rules: [(value) => !!value || "Required!"],
-      ref_rules: [(value) => !!value || "Required!"],
       forms: {
-        ref: "",
         from: "",
         to: "",
         subject: "",

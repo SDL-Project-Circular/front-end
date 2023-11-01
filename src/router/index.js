@@ -7,7 +7,13 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "circulars",
+    name: "Login",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/LoginPage.vue"),
+  },
+  {
+    path: "/home",
+    name: "CircularView",
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/HomePage.vue"),
   },
@@ -33,6 +39,12 @@ const routes = [
     name: "templatepage",
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/TemplatesView.vue"),
+  },
+  {
+    path: "/circular",
+    name: "CircularPreview",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/CircularPreview.vue"),
   },
 ];
 

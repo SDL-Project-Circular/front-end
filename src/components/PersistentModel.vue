@@ -69,8 +69,8 @@ export default {
       }
     },
     tempName: function (value) {
-      for (var j = 0; j < this.info.length; j++) {
-        if (this.info[j].template_name === value) {
+      for (const i of this.info) {
+        if (i.template_name === value) {
           return false;
         }
       }
