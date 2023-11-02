@@ -41,12 +41,14 @@
               label="FROM"
               v-model="forms.from"
               :rules="rules"
+              required
             ></v-textarea>
           </div>
           <div>
             <v-textarea
               auto-grow
               solo
+              required
               name="to"
               class="address"
               v-model="forms.to"
@@ -59,6 +61,7 @@
           <br />
           <v-textarea
             solo
+            required
             auto-grow
             name="subject"
             class="content"
@@ -82,6 +85,7 @@
           <v-textarea
             auto-grow
             solo
+            required
             name="body"
             class="content"
             placeholder="Enter the letter body"
@@ -91,6 +95,7 @@
           <v-textarea
             auto-grow
             solo
+            required
             name="signoff"
             style="float: right; margin-right: 10px"
             v-model="forms.sign_off"
@@ -100,6 +105,7 @@
           <v-textarea
             auto-grow
             solo
+            required
             name="copyto"
             class="address"
             v-model="forms.copy_to"

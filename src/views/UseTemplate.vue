@@ -31,15 +31,27 @@
       </nav>
       <hr style="margin: 0px" />
       <div class="container" style="margin-top: 10px">
-        <v-row>
-          <v-col cols="8"> </v-col>
-          <v-col cols="4">
-            <FrontendDatePicker @dateAdd="handleDate" />
-          </v-col>
-        </v-row>
         <v-form ref="form" lazy-validation @submit.prevent>
+          <v-row>
+            <v-col cols="4">
+              <v-text-field
+                name="circular_name"
+                label="CircularName"
+                required
+                filled
+                dense
+                v-model="info.circular_name"
+                :rules="simpleRules"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="4"></v-col>
+            <v-col cols="4">
+              <FrontendDatePicker @dateAdd="handleDate" />
+            </v-col>
+          </v-row>
           <v-text-field
             name="ref"
+            required
             label="Ref.no"
             v-model="info.ref_no"
             style="width: 25%"
@@ -82,11 +94,34 @@
             rows="1"
             disabled
           ></v-textarea>
-          <v-text-field
-            v-if="info.venue"
-            label="Venue"
-            v-model="info.venue"
-          ></v-text-field>
+          <v-row>
+            <v-col cols="3" v-if="options.includes('occurence_date')"
+              ><FrontendDatePicker
+                :rules="simpleRules"
+                @dateAdd="handleDateBody"
+                required
+            /></v-col>
+            <v-col cols="3" v-if="options.includes('venue')"
+              ><v-text-field
+                :rules="simpleRules"
+                label="Venue"
+                v-model="info.venue"
+                required
+              ></v-text-field
+            ></v-col>
+            <v-col cols="3" v-if="options.includes('starting_time')"
+              ><FrontendTimeRange
+                :rules="simpleRules"
+                :msg="'Starting Time'"
+                required
+            /></v-col>
+            <v-col cols="3" v-if="options.includes('ending_time')"
+              ><FrontendTimeRange
+                :rules="simpleRules"
+                :msg="'Ending Time'"
+                required
+            /></v-col>
+          </v-row>
           <v-textarea
             auto-grow
             solo
@@ -138,12 +173,14 @@
 <script>
 import axios from "axios";
 import FrontendDatePicker from "@/components/DatePicker.vue";
+import FrontendTimeRange from "@/components/TimeRange.vue";
 export default {
   name: "UseTemplate",
-  components: { FrontendDatePicker },
+  components: { FrontendDatePicker, FrontendTimeRange },
   data() {
     return {
       info: {
+        circular_name: "",
         from_address: "",
         to_address: "",
         subject: "",
@@ -153,20 +190,25 @@ export default {
         date: "",
         ref: "",
         occurence_date: null,
-        venue: "",
+        venue: null,
         starting_time: null,
         ending_time: null,
       },
+      simpleRules: [(value) => !!value || "Required!"],
       rules: [
         (value) => !!value || "Required!",
         () => this.checkRef() || "Reference ID already exists!",
       ],
       ref_info: [],
-      date: "",
+      options: [],
     };
   },
   created() {
     this.loader();
+  },
+  mounted() {
+    this.handleDate();
+    this.handleDateBody();
   },
   methods: {
     loader: async function () {
@@ -178,8 +220,9 @@ export default {
         for (const i of Object.keys(response.data)) {
           if (response.data[i] !== true && response.data[i] !== false) {
             this.info[i] = response.data[i];
+          } else if (response.data[i] === true) {
+            this.options.push(i);
           }
-          this.info.date = this.date;
         }
         const res = await axios.get("http://127.0.0.1:5000/circular");
         if (res.data.status !== "no") {
@@ -211,7 +254,10 @@ export default {
       }
     },
     handleDate(dateAdd) {
-      this.date = dateAdd;
+      this.info.date = dateAdd;
+    },
+    handleDateBody(dateAdd) {
+      this.info.occurence_date = dateAdd;
     },
     checkRef: function () {
       if (this.ref_info === null) {

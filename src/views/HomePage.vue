@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="circular">
     <h1 style="text-align: center">Circulars</h1>
     <v-card
-      elevation="10"
-      class="mx-auto mb-3"
+      elevation="20"
+      class="mx-auto mb-4"
       max-width="600"
       outlined
       v-for="(i, index) in info.slice().reverse()"
@@ -11,12 +11,19 @@
     >
       <v-card-title
         ><router-link
+          style="font-size: 110%"
           :to="{ name: 'CircularPreview', query: { id: i.ref_no } }"
         >
           {{ index + 1 }}. {{ i.circular_name | capitalize }}
         </router-link>
         <v-spacer></v-spacer>
       </v-card-title>
+      <v-card-text
+        class="text--primary font-weight-medium"
+        style="font-size: 103%"
+      >
+        Ref.No : {{ i.ref_no }}
+      </v-card-text>
     </v-card>
   </div>
 </template>

@@ -9,14 +9,14 @@ margin-top: 5px;
     display: inline-block;
     margin-right: 20px;
     color: white;
-    opacity: 0.8;
+    opacity: 0.5;
     transition: 0.2 ease color;
   }
   #nav a.router-link-active,
    #nav a:hover { 
-     opacity: 1; 
+     opacity: 2; 
    } 
-  .templates a {
+  .templates a, .circular a {
     text-decoration: none;
   }
 .icon {

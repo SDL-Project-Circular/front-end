@@ -43,6 +43,7 @@ export default {
     this.date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10);
+    this.$emit("dateAdd", this.date);
   },
 };
 </script>
