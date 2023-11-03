@@ -24,6 +24,7 @@
       >
         Ref.No : {{ i.ref_no }}
       </v-card-text>
+      <v-card-text class="pt-0"> Posted on: {{ i.date | slice }} </v-card-text>
     </v-card>
   </div>
 </template>
@@ -48,6 +49,11 @@ export default {
         );
       });
       return capitalized.join(" ");
+    },
+    slice: function (date) {
+      console.log(date);
+      var sliced = date.split(" ").slice(1, 4);
+      return sliced.join(" ");
     },
   },
   methods: {

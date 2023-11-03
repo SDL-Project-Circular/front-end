@@ -257,7 +257,9 @@ export default {
       this.info.date = dateAdd;
     },
     handleDateBody(dateAdd) {
-      this.info.occurence_date = dateAdd;
+      if (dateAdd !== undefined) {
+        this.info.occurence_date = dateAdd;
+      }
     },
     checkRef: function () {
       if (this.ref_info === null) {

@@ -31,7 +31,6 @@
   </div>
 </template>
 <script>
-// import { useVuelidate } from "@vuelidate/core";
 import axios from "axios";
 export default {
   data() {
