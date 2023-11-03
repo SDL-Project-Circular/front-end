@@ -44,5 +44,10 @@ export default {
   props: {
     msg: String,
   },
+  watch: {
+    time: function () {
+      this.$emit("time", this.time);
+    },
+  },
 };
 </script>

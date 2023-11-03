@@ -24,7 +24,18 @@
       >
         Ref.No : {{ i.ref_no }}
       </v-card-text>
-      <v-card-text class="pt-0"> Posted on: {{ i.date | slice }} </v-card-text>
+      <v-card-text class="pt-0 pb-0">
+        Posted on: {{ i.date | slice }}
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          class="white--text ml-2 mb-3"
+          color="#f03949"
+          @click="del(i.ref_no)"
+        >
+          Delete
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -64,6 +75,21 @@ export default {
           this.info = [];
         } else {
           this.info = response.data;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    del: async function (ref_no) {
+      try {
+        const response = await axios.delete(
+          "http://127.0.0.1:5000/circular?ref_no=" + ref_no
+        );
+        console.log(response);
+        if (response.data.status == "success") {
+          this.createCard();
+        } else {
+          console.log(response.data.status);
         }
       } catch (error) {
         console.log(error);

@@ -95,7 +95,7 @@
             disabled
           ></v-textarea>
           <v-row>
-            <v-col cols="3" v-if="options.includes('occurence_date')"
+            <v-col cols="3" v-if="options.includes('occurrence_date')"
               ><FrontendDatePicker
                 :rules="simpleRules"
                 @dateAdd="handleDateBody"
@@ -113,12 +113,14 @@
               ><FrontendTimeRange
                 :rules="simpleRules"
                 :msg="'Starting Time'"
+                @time="handleStartingDate"
                 required
             /></v-col>
             <v-col cols="3" v-if="options.includes('ending_time')"
               ><FrontendTimeRange
                 :rules="simpleRules"
                 :msg="'Ending Time'"
+                @time="handleEndingDate"
                 required
             /></v-col>
           </v-row>
@@ -165,7 +167,7 @@
       @click="generate"
       style="margin-left: 45%; margin-bottom: 40px"
     >
-      Done
+      POST
     </v-btn>
   </div>
 </template>
@@ -188,8 +190,7 @@ export default {
         sign_off: "",
         copy_to: "",
         date: "",
-        ref: "",
-        occurence_date: null,
+        occurrence_date: null,
         venue: null,
         starting_time: null,
         ending_time: null,
@@ -256,9 +257,15 @@ export default {
     handleDate(dateAdd) {
       this.info.date = dateAdd;
     },
+    handleStartingDate(start) {
+      this.info.starting_time = start;
+    },
+    handleEndingDate(end) {
+      this.info.ending_time = end;
+    },
     handleDateBody(dateAdd) {
       if (dateAdd !== undefined) {
-        this.info.occurence_date = dateAdd;
+        this.info.occurrence_date = dateAdd;
       }
     },
     checkRef: function () {

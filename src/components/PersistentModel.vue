@@ -16,11 +16,9 @@
               v-model="circular_name"
               label="Enter the template name here"
               :rules="rules"
+              required
             ></v-text-field>
           </v-form>
-          <p style="color: red" class="m-0">
-            {{ error }}
-          </p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="justify-end pt-0 pb-3">
@@ -38,14 +36,12 @@ export default {
       rules: [
         (value) => !!value || "Required!",
         (value) => (value && value.length >= 3) || "Min 3 characters",
-        (value) => this.tempName(value) || "Template name exists!",
+        () => this.tempName() || "Template name exists!",
       ],
       circular_name: "",
       dialog: true,
       info: [],
       v: [],
-      dummy: true,
-      error: "",
     };
   },
   mounted() {
@@ -55,7 +51,6 @@ export default {
     loader: async function () {
       try {
         const response = await axios.get("http://127.0.0.1:5000/templates");
-        console.log(response);
         this.info = response.data;
       } catch (error) {
         console.log(error);
@@ -67,9 +62,12 @@ export default {
         this.dialog = false;
       }
     },
-    tempName: function (value) {
+    tempName: function () {
+      if (this.info.status === "no") {
+        return true;
+      }
       for (const i of this.info) {
-        if (i.template_name === value) {
+        if (i.template_name === this.circular_name) {
           return false;
         }
       }
