@@ -20,34 +20,41 @@
       </nav>
       <hr style="margin: 0px" />
       <div class="container" style="margin-top: 10px">
-        <p>Date : {{ info.date }}</p>
+        <h5>Date : {{ info.date }}</h5>
         <h5>Ref.no : {{ info.ref_no }}</h5>
         <br />
         <div>
           <h5>From</h5>
-          <p
-            class="format"
-            style="margin-left: 40px; margin-top: 5px; margin-bottom: 60px"
-          >
+          <p class="format" style="margin-left: 40px; margin-top: 5px">
             {{ info.from_address }}
           </p>
         </div>
+        <br />
         <div>
           <h5>To</h5>
-          <p
-            class="format"
-            style="margin-left: 40px; margin-top: 5px; margin-bottom: 60px"
-          >
+          <p class="format" style="margin-left: 40px; margin-top: 5px">
             {{ info.to_address }}
           </p>
         </div>
         <h3 style="margin-top: 30px">Dear Sir/Madam,</h3>
-        <p class="format" style="margin-left: 5%">
-          <b>Subject : </b>{{ info.subject }}
-        </p>
+        <h5 class="format" style="margin-left: 5%; display: inline-block">
+          Subject :&nbsp;
+        </h5>
+        <h6 style="display: inline-block">{{ info.subject }}</h6>
         <p class="format" style="text-indent: 150pt; text-align: justify">
           {{ info.body }}
         </p>
+        <h5 v-if="info.venue !== null">Venue : {{ info.venue }}</h5>
+        <h5 v-if="info.occurrence_date !== null">
+          Date : {{ info.occurrence_date }}
+        </h5>
+        <h5 v-if="info.starting_time !== null" style="display: inline-block">
+          Time : {{ info.starting_time }}&nbsp;
+        </h5>
+        <h5 v-if="info.ending_time !== null" style="display: inline-block">
+          - {{ info.ending_time }}
+        </h5>
+        <br />
         <p
           class="format"
           style="float: right; margin-right: 10%; margin-top: 10%"
