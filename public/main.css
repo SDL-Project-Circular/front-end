@@ -30,3 +30,6 @@ margin-top: 5px;
 .address {
   width: 40%;
 }
+p {
+  white-space: pre-line;
+}

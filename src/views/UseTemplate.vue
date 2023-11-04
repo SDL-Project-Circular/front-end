@@ -222,12 +222,14 @@ export default {
           if (response.data[i] !== true && response.data[i] !== false) {
             this.info[i] = response.data[i];
           } else if (response.data[i] === true) {
+            console.log(i);
             this.options.push(i);
           }
         }
         const res = await axios.get("http://127.0.0.1:5000/circular");
         if (res.data.status !== "no") {
           this.ref_info = res.data;
+          this.formatter;
         }
       } catch (error) {
         console.log(error);
@@ -278,6 +280,12 @@ export default {
         }
       }
       return true;
+    },
+    formatter: function () {
+      console.log(2);
+      for (const i of Object.keys(this.info)) {
+        this.info[i].replace(/\n/g, "<br>");
+      }
     },
   },
 };

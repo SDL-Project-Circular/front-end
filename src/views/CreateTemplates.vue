@@ -150,7 +150,7 @@ export default {
       },
       selected: [],
       options: {
-        Date: "occurence_date",
+        Date: "occurrence_date",
         Venue: "venue",
         StartingTime: "starting_time",
         EndingTime: "ending_time",

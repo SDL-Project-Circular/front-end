@@ -25,6 +25,9 @@
             Delete
           </v-btn>
         </v-card-actions>
+        <v-card-text class="pt-0 pb-0">
+          Created on: {{ i.date | slice }}
+        </v-card-text>
       </v-card-title>
     </v-card>
     <router-link to="/newtemplate">
@@ -60,6 +63,13 @@ export default {
         );
       });
       return capitalized.join(" ");
+    },
+    slice: function (date) {
+      if (date === null) {
+        return;
+      }
+      var sliced = date.split(" ").slice(1, 4);
+      return sliced.join(" ");
     },
   },
   methods: {
