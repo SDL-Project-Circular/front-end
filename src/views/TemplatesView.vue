@@ -1,12 +1,13 @@
 <template>
   <div class="templates container">
+    <SearchBar @search="handleSearch" />
     <h1 style="text-align: center" class="mb-4">Templates</h1>
     <v-card
       elevation="10"
       class="mx-auto mb-3"
       max-width="600"
       outlined
-      v-for="(i, index) in info.slice().reverse()"
+      v-for="(i, index) in resultQuery.slice().reverse()"
       :key="i.template_id"
     >
       <v-card-title
@@ -43,11 +44,13 @@
 
 <script>
 import axios from "axios";
+import SearchBar from "@/components/SearchBar.vue";
 export default {
   name: "TemplatesView",
-
+  components: { SearchBar },
   data() {
     return {
+      searchQuery: null,
       info: [],
     };
   },
@@ -97,6 +100,23 @@ export default {
         }
       } catch (error) {
         console.log(error);
+      }
+    },
+    handleSearch(search) {
+      this.searchQuery = search;
+    },
+  },
+  computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.info.filter((item) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) => item.template_name.toLowerCase().includes(v));
+        });
+      } else {
+        return this.info;
       }
     },
   },

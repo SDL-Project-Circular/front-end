@@ -28,15 +28,16 @@
             <router-link class="icon" to="/settings">Settings</router-link>
           </li>
         </ul>
-        <input
-          v-if="$route.path === '/'"
-          class="form-control"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-          style="width: 500px"
-        />
       </div>
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  name: "FrontendNavBar",
+  data() {
+    return {};
+  },
+};
+</script>
