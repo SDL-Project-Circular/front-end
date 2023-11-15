@@ -128,13 +128,15 @@
     >
       Generate
     </v-btn>
+    <ErrorMessage />
   </div>
 </template>
 <script>
 import axios from "axios";
 import PresistentModelVue from "@/components/PersistentModel.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 export default {
-  components: { PresistentModelVue },
+  components: { PresistentModelVue, ErrorMessage },
   data() {
     return {
       rules: [(value) => !!value || "Required!"],
