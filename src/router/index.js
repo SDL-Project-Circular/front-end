@@ -14,9 +14,24 @@ const routes = [
   {
     path: "/home",
     name: "CircularView",
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("auth-token") ? true : false) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/HomePage.vue"),
   },
+
+  {
+    path: "/homepageforhod",
+    name: "HodHome",
+    component: () =>
+      import(/*webpackChunkName: "templates" */ "@/views/HodDisplay.vue"),
+  },
+
   {
     path: "/settings",
     name: "settings",
@@ -45,6 +60,18 @@ const routes = [
     name: "CircularPreview",
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/CircularPreview.vue"),
+  },
+  {
+    path: "/editcircular",
+    name: "EditCircular",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/EditCircular.vue"),
+  },
+  {
+    path: "/pending",
+    name: "ApproveCircular",
+    component: () =>
+      import(/* webpackChunkName: "templates" */ "@/views/ApproveCircular.vue"),
   },
 ];
 

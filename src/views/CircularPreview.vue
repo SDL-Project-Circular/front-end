@@ -72,14 +72,23 @@
       </div>
     </div>
     <br />
-    <button
+    <v-btn
       id="submit"
       class="btn btn-primary"
       style="margin-left: 45%; margin-bottom: 40px"
       @click="printIt"
     >
       PRINT
-    </button>
+    </v-btn>
+    <v-btn class="ma-2" color="primary">
+      Accept
+      <v-icon end icon="mdi-checkbox-marked-circle"></v-icon>
+    </v-btn>
+
+    <v-btn class="ma-2" color="red">
+      Decline
+      <v-icon end icon="mdi-cancel"></v-icon>
+    </v-btn>
   </div>
 </template>
 

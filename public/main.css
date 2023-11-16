@@ -9,12 +9,12 @@ margin-top: 5px;
     display: inline-block;
     margin-right: 20px;
     color: white;
-    opacity: 0.5;
+    opacity: 0.7;
     transition: 0.2 ease color;
   }
   #nav a.router-link-active,
    #nav a:hover { 
-     opacity: 2; 
+     opacity: 4; 
    } 
   .templates a, .circular a {
     text-decoration: none;

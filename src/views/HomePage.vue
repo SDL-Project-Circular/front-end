@@ -112,7 +112,7 @@
               v-if="i.status === 'Rejected'"
               class="white--text"
               color="primary"
-              @click="s"
+              @click="editButton(i.ref_no)"
             >
               Edit
             </v-btn>
@@ -136,7 +136,7 @@ export default {
       pending: [],
     };
   },
-  mounted() {
+  created() {
     this.createCard();
   },
   filters: {
@@ -160,7 +160,7 @@ export default {
       try {
         const response = await axios.get("http://127.0.0.1:5000/circular", {
           headers: {
-            "Authentication-Token": "",
+            "Authentication-Token": localStorage.getItem("auth-token"),
           },
         });
         if (response.data.status == "no") {
@@ -172,7 +172,21 @@ export default {
           );
         }
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location = "/";
+        }
         console.log(error);
+      }
+    },
+    postCircular: async function (ref_no) {
+      try {
+        const response = await axios.patch(
+          "http://127.0.0.1:5000/circular?id=" + ref_no
+        );
+        console.log(response);
+        this.createCard();
+      } catch (err) {
+        console.log(err);
       }
     },
     del: async function (ref_no) {
@@ -193,13 +207,8 @@ export default {
     handleSearch(search) {
       this.searchQuery = search;
     },
-    postCircular: async function (ref_no) {
-      try {
-        const response = await axios.patch("http://127.0.0.1:5000/" + ref_no);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
+    editButton: function (ref_no) {
+      window.location = "/editcircular?ref_no=" + ref_no;
     },
   },
   computed: {

@@ -10,16 +10,23 @@
           <v-card-text class="mt-4 pb-2"
             ><v-form ref="form" lazy-validation>
               <v-text-field
-                v-model="forms.staff_id"
-                label="Staff ID"
+                type="email"
+                v-model="forms.email"
+                label="Email ID"
+                :rules="[rules.required, rules.email]"
                 required
               ></v-text-field>
               <v-text-field
+                type="password"
                 v-model="forms.password"
+                :rules="[rules.required]"
                 label="Password"
                 required
               ></v-text-field> </v-form
           ></v-card-text>
+          <v-card-text style="color: crimson" class="pt-0 pb-0">{{
+            error
+          }}</v-card-text>
           <v-card-actions class="justify-end pt-0 pb-3 mr-2" style="">
             <v-btn type="button" color="primary" @click="generate"
               >Submit</v-btn
@@ -41,9 +48,19 @@ export default {
   data() {
     return {
       forms: {
-        staff_id: "",
+        email: "",
         password: "",
       },
+      rules: {
+        required: (value) => !!value || "Required.",
+        counter: (value) => value.length <= 20 || "Max 20 characters",
+        email: (value) => {
+          const pattern =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value) || "Invalid e-mail.";
+        },
+      },
+      error: "",
     };
   },
 
@@ -51,9 +68,12 @@ export default {
 
   methods: {
     generate: async function () {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
       try {
         const response = await axios.post(
-          "http://127.0.0.1:5000/login",
+          "http://127.0.0.1:5000/login-user",
           this.forms,
           {
             headers: {
@@ -61,8 +81,12 @@ export default {
             },
           }
         );
-        if (response.data.status === "Success") {
+        console.log(response);
+        if (response.data.message === "Success") {
+          localStorage.setItem("auth-token", response.data.token);
           window.location = "/home";
+        } else {
+          this.error = response.data.error;
         }
       } catch (error) {
         console.log(error);

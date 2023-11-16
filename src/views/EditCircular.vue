@@ -41,7 +41,7 @@
                 filled
                 dense
                 v-model="info.circular_name"
-                :rules="simpleRules"
+                :rules="rules"
               ></v-text-field>
             </v-col>
             <v-col cols="4"></v-col>
@@ -56,6 +56,7 @@
             v-model="info.ref_no"
             style="width: 25%"
             :rules="rules"
+            disabled
             outlined
           ></v-text-field>
           <div>
@@ -198,7 +199,7 @@ export default {
       simpleRules: [(value) => !!value || "Required!"],
       rules: [
         (value) => !!value || "Required!",
-        () => this.checkRef() || "Reference ID already exists!",
+        () => this.checkName() || "Circular Name already exists!",
       ],
       ref_info: [],
       options: [],
@@ -213,15 +214,15 @@ export default {
   },
   methods: {
     loader: async function () {
+      const temp = ["occurrence_date", "venue", "starting_time", "ending_time"];
       try {
         const response = await axios.get(
-          "http://127.0.0.1:5000/generate?id=" + this.$route.query.id
+          "http://127.0.0.1:5000/circular?id=" + this.$route.query.ref_no
         );
-        // console.log(response.data);
         for (const i of Object.keys(response.data)) {
-          if (response.data[i] !== true && response.data[i] !== false) {
+          if (!temp.includes(i)) {
             this.info[i] = response.data[i];
-          } else if (response.data[i] === true) {
+          } else if (temp.includes(i) && response.data[i] !== null) {
             console.log(i);
             this.options.push(i);
           }
@@ -229,7 +230,6 @@ export default {
         const res = await axios.get("http://127.0.0.1:5000/circular");
         if (res.data.status !== "no") {
           this.ref_info = res.data;
-          this.formatter;
         }
       } catch (error) {
         console.log(error);
@@ -240,8 +240,8 @@ export default {
         return;
       }
       try {
-        const res = await axios.post(
-          "http://127.0.0.1:5000/circular",
+        const res = await axios.patch(
+          "http://127.0.0.1:5000/circular?ref_no=" + this.$route.query.ref_no,
           JSON.stringify(this.info),
           {
             headers: {
@@ -250,7 +250,7 @@ export default {
           }
         );
         if (res.data.status === "success") {
-          window.location = "/circular?id=" + res.data.circular_id;
+          window.location = "/home";
         }
       } catch (error) {
         console.log(error);
@@ -270,22 +270,16 @@ export default {
         this.info.occurrence_date = dateAdd;
       }
     },
-    checkRef: function () {
+    checkName: function () {
       if (this.ref_info === null) {
         return true;
       }
       for (const i of this.ref_info) {
-        if (i.ref_no === this.info.ref_no) {
+        if (i.circular_name === this.info.circular_name) {
           return false;
         }
       }
       return true;
-    },
-    formatter: function () {
-      console.log(2);
-      for (const i of Object.keys(this.info)) {
-        this.info[i].replace(/\n/g, "<br>");
-      }
     },
   },
 };
