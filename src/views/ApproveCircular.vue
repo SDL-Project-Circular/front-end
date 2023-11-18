@@ -27,6 +27,16 @@
         Ref.No : {{ i.ref_no }}
       </v-card-text>
       <v-card-text class="pt-0"> Sent on: {{ i.date | slice }} </v-card-text>
+      <v-card-actions>
+        <v-btn class="ma-2" color="primary" @click="approvePost(i.ref_no)">
+          Accept
+          <v-icon end icon="mdi-checkbox-marked-circle"></v-icon>
+        </v-btn>
+        <v-btn class="ma-2" color="error" @click="declinePost(i.ref_no)">
+          Decline
+          <v-icon end icon="mdi-cancel"></v-icon>
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -65,11 +75,27 @@ export default {
         } else {
           this.info = response.data.filter((item) => item.approved === true);
           this.pending = response.data.filter(
-            (item) => item.approved === false
+            (item) => item.approved === false && item.status === "Pending"
           );
         }
       } catch (error) {
         console.log(error);
+      }
+    },
+    declinePost: async function (ref_no) {
+      try {
+        await axios.patch("http://127.0.0.1:5000/approval?ref_no=" + ref_no);
+        this.createCard();
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    approvePost: async function (ref_no) {
+      try {
+        await axios.patch("http://127.0.0.1:5000/approval?id=" + ref_no);
+        this.createCard();
+      } catch (err) {
+        console.log(err);
       }
     },
   },

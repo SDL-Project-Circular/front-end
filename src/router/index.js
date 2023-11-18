@@ -15,7 +15,10 @@ const routes = [
     path: "/home",
     name: "CircularView",
     beforeEnter: (to, from, next) => {
-      if (localStorage.getItem("auth-token") ? true : false) {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "admin"
+      ) {
         next();
       } else {
         next("/");

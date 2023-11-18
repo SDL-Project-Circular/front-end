@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <input
-      class="form-control"
-      type="search"
-      v-model="searchQuery"
-      placeholder="Search"
-      aria-label="Search"
-      style="width: 500px"
-    />
-  </div>
+  <input
+    class="form-control"
+    type="search"
+    v-model="searchQuery"
+    placeholder="Search"
+    aria-label="Search"
+    style="width: 500px"
+  />
 </template>
 
 <script>

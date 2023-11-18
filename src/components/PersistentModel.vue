@@ -26,11 +26,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 <script>
 import axios from "axios";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 export default {
+  components: { ErrorMessage },
   data() {
     return {
       rules: [
@@ -40,6 +43,10 @@ export default {
       ],
       circular_name: "",
       dialog: true,
+      error: {
+        err: false,
+        message: "",
+      },
       info: [],
       v: [],
     };
@@ -53,7 +60,8 @@ export default {
         const response = await axios.get("http://127.0.0.1:5000/templates");
         this.info = response.data;
       } catch (error) {
-        console.log(error);
+        this.error.err = true;
+        this.error.message = error.message;
       }
     },
     clicker: function () {

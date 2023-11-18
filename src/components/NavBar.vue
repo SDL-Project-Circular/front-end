@@ -21,20 +21,15 @@
           <li class="nav-item">
             <router-link class="icon" to="/home">Home</router-link>
           </li>
-          <li class="nav-item" v-if="$route.path === '/home'">
+          <li class="nav-item" v-if="checkRole === 'admin'">
             <router-link class="icon" to="/templatepage">Template</router-link>
           </li>
-          <li class="nav-item" v-if="$route.path === '/homepageforhod'">
+          <li class="nav-item" v-if="checkRole === 'HOD'">
             <router-link class="icon" to="/pending">Approval</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="icon" to="/settings">Settings</router-link>
           </li>
           <li style="float: right">
             <router-link class="icon" to="/">
-              <v-btn @click="window.localStorage.removeItem('auth-token')"
-                >Logout</v-btn
-              >
+              <v-btn @click="removeUser">Logout</v-btn>
             </router-link>
           </li>
         </ul>
@@ -48,6 +43,15 @@ export default {
   name: "FrontendNavBar",
   data() {
     return {};
+  },
+  methods: {
+    checkRole: function () {
+      return localStorage.getItem("role");
+    },
+    removeUser: function () {
+      localStorage.removeItem("auth-token");
+      localStorage.removeItem("role");
+    },
   },
 };
 </script>

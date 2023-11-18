@@ -1,14 +1,26 @@
 <template>
   <div class="circular container">
-    <v-row>
-      <v-col cols="6">
-        <h1>Posted Circulars</h1>
-        <SearchBar @search="handleSearch" />
+    <v-tabs
+      v-model="tab"
+      color="#673AB7
+    "
+      centered
+    >
+      <v-tab :value="1">Posted</v-tab>
+      <v-tab :value="2">Pending</v-tab>
+    </v-tabs>
+    <br />
+    <v-window v-model="tab">
+      <v-window-item>
+        <SearchBar
+          @search="handleSearch1"
+          style="display: block; margin-right: auto; margin-left: auto"
+        />
         <br />
         <v-card
           elevation="20"
           class="mx-auto mb-4"
-          max-width="600"
+          max-width="500"
           outlined
           v-for="(i, index) in resultQuery.slice().reverse()"
           :key="i.ref_no"
@@ -32,19 +44,19 @@
             Posted on: {{ i.date | slice }}
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              class="white--text ml-2 mb-3"
-              color="#f03949"
-              @click="del(i.ref_no)"
-            >
-              Delete
-            </v-btn>
+            <FrontendConfirmDelete
+              :action="'delete'"
+              :msg="'circular ' + i.circular_name"
+              @deleted="HandleDelete(i.ref_no)"
+            />
           </v-card-actions>
         </v-card>
-      </v-col>
-      <v-col cols="6">
-        <h1>Pending</h1>
-        <SearchBar @search="handleSearch" />
+      </v-window-item>
+      <v-window-item>
+        <SearchBar
+          @search="handleSearch2"
+          style="display: block; margin-right: auto; margin-left: auto"
+        />
         <br />
         <v-card
           elevation="20"
@@ -100,14 +112,14 @@
             <v-card-title v-if="i.status !== 'Pending'">
               Action :
             </v-card-title>
-            <v-btn
+            <FrontendConfirmDelete
+              :action="'post'"
+              :msg="'circular ' + i.circular_name"
               v-if="i.status === 'Accepted'"
-              class="white--text"
-              color="primary"
-              @click="postCircular(i.ref_no)"
+              @deleted="handlePost(i.ref_no)"
             >
               Post
-            </v-btn>
+            </FrontendConfirmDelete>
             <v-btn
               v-if="i.status === 'Rejected'"
               class="white--text"
@@ -118,20 +130,29 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-col>
-    </v-row>
+      </v-window-item>
+    </v-window>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import SearchBar from "@/components/SearchBar.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
+import FrontendConfirmDelete from "@/components/ConfirmDelete.vue";
 export default {
   name: "CircularView",
-  components: { SearchBar },
+  components: { SearchBar, ErrorMessage, FrontendConfirmDelete },
   data() {
     return {
-      searchQuery: null,
+      searchQuery1: null,
+      tab: null,
+      error: {
+        err: false,
+        message: "",
+      },
+      searchQuery2: null,
       info: [],
       pending: [],
     };
@@ -150,12 +171,18 @@ export default {
       return capitalized.join(" ");
     },
     slice: function (date) {
-      console.log(date);
+      // console.log(date);
       var sliced = date.split(" ").slice(1, 4);
       return sliced.join(" ");
     },
   },
   methods: {
+    HandleDelete: function (ref_no) {
+      this.del(ref_no);
+    },
+    handlePost: function (ref_no) {
+      this.postCircular(ref_no);
+    },
     createCard: async function () {
       try {
         const response = await axios.get("http://127.0.0.1:5000/circular", {
@@ -172,10 +199,13 @@ export default {
           );
         }
       } catch (error) {
-        if (error.response.status === 401) {
-          window.location = "/";
+        if (error.code === "ERR_NETWORK") {
+          this.error.err = true;
+          this.error.message = error.message;
+          setTimeout(() => {
+            this.error.err = false;
+          }, 2000);
         }
-        console.log(error);
       }
     },
     postCircular: async function (ref_no) {
@@ -184,6 +214,11 @@ export default {
           "http://127.0.0.1:5000/circular?id=" + ref_no
         );
         console.log(response);
+        this.error.err = true;
+        this.error.message = "Posted successfully!";
+        setTimeout(() => {
+          this.error.err = false;
+        }, 4000);
         this.createCard();
       } catch (err) {
         console.log(err);
@@ -194,8 +229,13 @@ export default {
         const response = await axios.delete(
           "http://127.0.0.1:5000/circular?ref_no=" + ref_no
         );
-        console.log(response);
+        // console.log(response);
         if (response.data.status == "success") {
+          this.error.err = true;
+          this.error.message = "Deleted successfully!";
+          setTimeout(() => {
+            this.error.err = false;
+          }, 4000);
           this.createCard();
         } else {
           console.log(response.data.status);
@@ -204,8 +244,11 @@ export default {
         console.log(error);
       }
     },
-    handleSearch(search) {
-      this.searchQuery = search;
+    handleSearch1(search) {
+      this.searchQuery1 = search;
+    },
+    handleSearch2(search) {
+      this.searchQuery2 = search;
     },
     editButton: function (ref_no) {
       window.location = "/editcircular?ref_no=" + ref_no;
@@ -213,9 +256,9 @@ export default {
   },
   computed: {
     resultQuery() {
-      if (this.searchQuery) {
+      if (this.searchQuery1) {
         return this.info.filter((item) => {
-          return this.searchQuery
+          return this.searchQuery1
             .toLowerCase()
             .split(" ")
             .every((v) => item.circular_name.toLowerCase().includes(v));
@@ -225,9 +268,9 @@ export default {
       }
     },
     pendingResultQuery() {
-      if (this.searchQuery) {
-        return this.info.filter((item) => {
-          return this.searchQuery
+      if (this.searchQuery2) {
+        return this.pending.filter((item) => {
+          return this.searchQuery2
             .toLowerCase()
             .split(" ")
             .every((v) => item.circular_name.toLowerCase().includes(v));

@@ -128,7 +128,7 @@
     >
       Generate
     </v-btn>
-    <ErrorMessage />
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 <script>
@@ -149,6 +149,10 @@ export default {
         copy_to: "",
         template_name: "",
         selectedOptions: {},
+      },
+      error: {
+        err: false,
+        message: "",
       },
       selected: [],
       options: {
@@ -186,7 +190,13 @@ export default {
           window.location = "/templatepage";
         }
       } catch (error) {
-        console.log(error);
+        if (error.code === "ERR_NETWORK") {
+          this.error.err = true;
+          this.error.message = error.message;
+          setTimeout(() => {
+            this.error.err = false;
+          }, 2000);
+        }
       }
     },
     handleChildData(data) {

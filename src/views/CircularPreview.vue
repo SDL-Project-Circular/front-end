@@ -72,23 +72,16 @@
       </div>
     </div>
     <br />
-    <v-btn
-      id="submit"
-      class="btn btn-primary"
-      style="margin-left: 45%; margin-bottom: 40px"
-      @click="printIt"
-    >
-      PRINT
-    </v-btn>
-    <v-btn class="ma-2" color="primary">
-      Accept
-      <v-icon end icon="mdi-checkbox-marked-circle"></v-icon>
-    </v-btn>
-
-    <v-btn class="ma-2" color="red">
-      Decline
-      <v-icon end icon="mdi-cancel"></v-icon>
-    </v-btn>
+    <div class="container mb-4" style="text-align: center">
+      <v-btn
+        id="submit"
+        class="btn btn-primary ma-2"
+        style="margin-left: 45%"
+        @click="printIt"
+      >
+        PRINT
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -108,7 +101,7 @@ export default {
         const response = await axios.get(
           "http://127.0.0.1:5000/circular?id=" + this.$route.query.id
         );
-        console.log(response);
+        // console.log(response);
         this.info = response.data;
       } catch (error) {
         console.log(error);
@@ -122,6 +115,12 @@ export default {
       window.print();
       document.body.innerHTML = original;
       location.reload();
+    },
+    checker: function () {
+      if (localStorage.getItem("role") === "HOD") {
+        return true;
+      }
+      return false;
     },
   },
   mounted() {

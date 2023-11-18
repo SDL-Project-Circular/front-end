@@ -84,6 +84,7 @@ export default {
         console.log(response);
         if (response.data.message === "Success") {
           localStorage.setItem("auth-token", response.data.token);
+          localStorage.setItem("role", response.data.role);
           window.location = "/home";
         } else {
           this.error = response.data.error;

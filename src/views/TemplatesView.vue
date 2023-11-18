@@ -18,13 +18,11 @@
         </router-link>
         <v-spacer></v-spacer>
         <v-card-actions>
-          <v-btn
-            class="white--text"
-            color="#f03949"
-            @click="deleteCard(i.template_id)"
-          >
-            Delete
-          </v-btn>
+          <FrontendConfirmDelete
+            :action="'delete'"
+            :msg="'template ' + i.template_name"
+            @deleted="HandleDelete(i.template_id)"
+          />
         </v-card-actions>
         <v-card-text class="pt-0 pb-0">
           Created on: {{ i.date | slice }}
@@ -39,19 +37,26 @@
       </div>
     </router-link>
     <h1 v-if="info.length === 0" style="text-align: center">No content yet!</h1>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import SearchBar from "@/components/SearchBar.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
+import FrontendConfirmDelete from "@/components/ConfirmDelete.vue";
 export default {
   name: "TemplatesView",
-  components: { SearchBar },
+  components: { SearchBar, ErrorMessage, FrontendConfirmDelete },
   data() {
     return {
       searchQuery: null,
       info: [],
+      error: {
+        err: false,
+        message: "",
+      },
     };
   },
   mounted() {
@@ -76,6 +81,9 @@ export default {
     },
   },
   methods: {
+    HandleDelete: function (template_id) {
+      this.deleteCard(template_id);
+    },
     createCard: async function () {
       try {
         const response = await axios.get("http://127.0.0.1:5000/templates");
@@ -85,7 +93,13 @@ export default {
           this.info = response.data;
         }
       } catch (error) {
-        console.log(error);
+        if (error.code === "ERR_NETWORK") {
+          this.error.err = true;
+          this.error.message = error.message;
+          setTimeout(() => {
+            this.error.err = false;
+          }, 2000);
+        }
       }
     },
     deleteCard: async function (template_id) {

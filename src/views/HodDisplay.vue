@@ -30,28 +30,33 @@
         Posted on: {{ i.date | slice }}
       </v-card-text>
       <v-card-actions>
-        <v-btn
-          class="white--text ml-2 mb-3"
-          color="#f03949"
-          @click="del(i.ref_no)"
-        >
-          Delete
-        </v-btn>
+        <FrontendConfirmDelete
+          :action="'delete'"
+          :msg="'circular ' + i.circular_name"
+          @deleted="HandleDelete(i.ref_no)"
+        />
       </v-card-actions>
     </v-card>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import SearchBar from "@/components/SearchBar.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
+import FrontendConfirmDelete from "@/components/ConfirmDelete.vue";
 export default {
   name: "HodDisplay",
-  components: { SearchBar },
+  components: { SearchBar, FrontendConfirmDelete, ErrorMessage },
   data() {
     return {
       searchQuery: null,
       info: [],
+      error: {
+        err: false,
+        message: "",
+      },
     };
   },
 
@@ -60,6 +65,9 @@ export default {
   },
 
   methods: {
+    HandleDelete: function (ref_no) {
+      this.del(ref_no);
+    },
     del: async function (ref_no) {
       try {
         const response = await axios.delete(
@@ -68,6 +76,11 @@ export default {
         console.log(response);
         if (response.data.status == "success") {
           this.createCard();
+          this.error.err = true;
+          this.error.message = "Deleted successfully!";
+          setTimeout(() => {
+            this.error.err = false;
+          }, 4000);
         } else {
           console.log(response.data.status);
         }
