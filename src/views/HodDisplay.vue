@@ -1,7 +1,10 @@
 <template>
-  <div class="circular container">
-    <h1>POSTED CIRCULARS</h1>
-    <SearchBar @search="handleSearch" />
+  <div class="circular mt-4 container">
+    <h1 class="mb-4" style="text-align: center">POSTED CIRCULARS</h1>
+    <SearchBar
+      style="display: block; margin-right: auto; margin-left: auto"
+      @search="handleSearch"
+    />
     <br />
     <v-card
       elevation="20"
@@ -29,7 +32,7 @@
       <v-card-text class="pt-0 pb-0">
         Posted on: {{ i.date | slice }}
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="mb-2 mt-2 ml-2">
         <FrontendConfirmDelete
           :action="'delete'"
           :msg="'circular ' + i.circular_name"
@@ -71,7 +74,12 @@ export default {
     del: async function (ref_no) {
       try {
         const response = await axios.delete(
-          "http://127.0.0.1:5000/circular?ref_no=" + ref_no
+          "http://127.0.0.1:5000/circular?ref_no=" + ref_no,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         console.log(response);
         if (response.data.status == "success") {
@@ -92,7 +100,7 @@ export default {
       try {
         const response = await axios.get("http://127.0.0.1:5000/circular", {
           headers: {
-            "Authentication-Token": "",
+            "Authentication-Token": localStorage.getItem("auth-token"),
           },
         });
         if (response.data.status == "no") {

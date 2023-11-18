@@ -1,7 +1,11 @@
 <template>
   <div class="templates container">
-    <SearchBar @search="handleSearch" />
     <h1 style="text-align: center" class="mb-4">Templates</h1>
+    <SearchBar
+      @search="handleSearch"
+      style="display: block; margin-right: auto; margin-left: auto"
+    />
+    <br />
     <v-card
       elevation="10"
       class="mx-auto mb-3"
@@ -86,7 +90,11 @@ export default {
     },
     createCard: async function () {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/templates");
+        const response = await axios.get("http://127.0.0.1:5000/templates", {
+          headers: {
+            "Authentication-Token": localStorage.getItem("auth-token"),
+          },
+        });
         if (response.data.status == "no") {
           this.info = [];
         } else {
@@ -105,7 +113,12 @@ export default {
     deleteCard: async function (template_id) {
       try {
         const response = await axios.delete(
-          "http://127.0.0.1:5000/generate?id=" + template_id
+          "http://127.0.0.1:5000/generate?id=" + template_id,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         if (response.data.status == "success") {
           this.createCard();

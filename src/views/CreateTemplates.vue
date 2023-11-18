@@ -180,6 +180,7 @@ export default {
           {
             headers: {
               "Content-Type": "application/json",
+              "Authentication-Token": localStorage.getItem("auth-token"),
             },
           }
         );

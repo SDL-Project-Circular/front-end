@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <h1>Pending</h1>
-    <SearchBar @search="handleSearch" />
+  <div class="circular mt-2 container">
+    <h1 style="text-align: center">Pending</h1>
+    <SearchBar
+      style="display: block; margin-right: auto; margin-left: auto"
+      @search="handleSearch"
+    />
     <br />
     <v-card
       elevation="20"
@@ -26,7 +29,9 @@
       >
         Ref.No : {{ i.ref_no }}
       </v-card-text>
-      <v-card-text class="pt-0"> Sent on: {{ i.date | slice }} </v-card-text>
+      <v-card-text class="pt-0 pb-0">
+        Sent on: {{ i.date | slice }}
+      </v-card-text>
       <v-card-actions>
         <v-btn class="ma-2" color="primary" @click="approvePost(i.ref_no)">
           Accept
@@ -67,7 +72,7 @@ export default {
       try {
         const response = await axios.get("http://127.0.0.1:5000/circular", {
           headers: {
-            "Authentication-Token": "",
+            "Authentication-Token": localStorage.getItem("auth-token"),
           },
         });
         if (response.data.status == "no") {
@@ -84,7 +89,15 @@ export default {
     },
     declinePost: async function (ref_no) {
       try {
-        await axios.patch("http://127.0.0.1:5000/approval?ref_no=" + ref_no);
+        await axios.patch(
+          "http://127.0.0.1:5000/approval?ref_no=" + ref_no,
+          null,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
+        );
         this.createCard();
       } catch (err) {
         console.log(err);
@@ -92,7 +105,11 @@ export default {
     },
     approvePost: async function (ref_no) {
       try {
-        await axios.patch("http://127.0.0.1:5000/approval?id=" + ref_no);
+        await axios.patch("http://127.0.0.1:5000/approval?id=" + ref_no, null, {
+          headers: {
+            "Authentication-Token": localStorage.getItem("auth-token"),
+          },
+        });
         this.createCard();
       } catch (err) {
         console.log(err);
@@ -118,7 +135,7 @@ export default {
   computed: {
     pendingResultQuery() {
       if (this.searchQuery) {
-        return this.info.filter((item) => {
+        return this.pending.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")

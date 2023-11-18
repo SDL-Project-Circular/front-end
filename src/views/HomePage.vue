@@ -7,7 +7,14 @@
       centered
     >
       <v-tab :value="1">Posted</v-tab>
-      <v-tab :value="2">Pending</v-tab>
+      <v-tab :value="2"
+        >Pending
+        <v-badge
+          v-if="pendingResultQuery.length > 0"
+          :content="pendingResultQuery.length"
+          color="error"
+        ></v-badge
+      ></v-tab>
     </v-tabs>
     <br />
     <v-window v-model="tab">
@@ -43,7 +50,7 @@
           <v-card-text class="pt-0 pb-0">
             Posted on: {{ i.date | slice }}
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="ml-2 mt-2 mb-2">
             <FrontendConfirmDelete
               :action="'delete'"
               :msg="'circular ' + i.circular_name"
@@ -211,7 +218,13 @@ export default {
     postCircular: async function (ref_no) {
       try {
         const response = await axios.patch(
-          "http://127.0.0.1:5000/circular?id=" + ref_no
+          "http://127.0.0.1:5000/circular?id=" + ref_no,
+          null,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         console.log(response);
         this.error.err = true;
@@ -227,7 +240,13 @@ export default {
     del: async function (ref_no) {
       try {
         const response = await axios.delete(
-          "http://127.0.0.1:5000/circular?ref_no=" + ref_no
+          "http://127.0.0.1:5000/circular?ref_no=" + ref_no,
+          null,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         // console.log(response);
         if (response.data.status == "success") {

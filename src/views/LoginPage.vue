@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <v-row>
       <v-col>
         <v-card style="margin-top: 37%; width: 70%; margin-left: 15%">
@@ -85,7 +85,12 @@ export default {
         if (response.data.message === "Success") {
           localStorage.setItem("auth-token", response.data.token);
           localStorage.setItem("role", response.data.role);
-          window.location = "/home";
+          const role = response.data.role;
+          if (role === "admin") {
+            window.location = "/home";
+          } else if (role === "HOD") {
+            window.location = "/homepageforhod";
+          }
         } else {
           this.error = response.data.error;
         }

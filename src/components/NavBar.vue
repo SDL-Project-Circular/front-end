@@ -18,13 +18,16 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+          <li class="nav-item" v-if="checkRole() === 'admin'">
             <router-link class="icon" to="/home">Home</router-link>
           </li>
-          <li class="nav-item" v-if="checkRole === 'admin'">
+          <li class="nav-item" v-if="checkRole() === 'HOD'">
+            <router-link class="icon" to="/homepageforhod">Home</router-link>
+          </li>
+          <li class="nav-item" v-if="checkRole() === 'admin'">
             <router-link class="icon" to="/templatepage">Template</router-link>
           </li>
-          <li class="nav-item" v-if="checkRole === 'HOD'">
+          <li class="nav-item" v-if="checkRole() === 'HOD'">
             <router-link class="icon" to="/pending">Approval</router-link>
           </li>
           <li style="float: right">

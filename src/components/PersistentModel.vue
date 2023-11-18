@@ -57,7 +57,11 @@ export default {
   methods: {
     loader: async function () {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/templates");
+        const response = await axios.get("http://127.0.0.1:5000/templates", {
+          headers: {
+            "Authentication-Token": localStorage.getItem("auth-token"),
+          },
+        });
         this.info = response.data;
       } catch (error) {
         this.error.err = true;

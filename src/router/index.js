@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import SettingsPage from "@/views/SettingsPage.vue";
 
 Vue.use(VueRouter);
 
@@ -31,14 +30,18 @@ const routes = [
   {
     path: "/homepageforhod",
     name: "HodHome",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "HOD"
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/*webpackChunkName: "templates" */ "@/views/HodDisplay.vue"),
-  },
-
-  {
-    path: "/settings",
-    name: "settings",
-    component: SettingsPage,
   },
   {
     path: "/template",
@@ -48,6 +51,16 @@ const routes = [
   },
   {
     path: "/newtemplate",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "admin"
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     name: "CreateTemplates",
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/CreateTemplates.vue"),
@@ -55,24 +68,65 @@ const routes = [
   {
     path: "/templatepage",
     name: "templatepage",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "admin"
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/TemplatesView.vue"),
   },
   {
     path: "/circular",
     name: "CircularPreview",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        (localStorage.getItem("role") === "admin" ||
+          localStorage.getItem("role") === "admin")
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/CircularPreview.vue"),
   },
   {
     path: "/editcircular",
     name: "EditCircular",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "admin"
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/EditCircular.vue"),
   },
   {
     path: "/pending",
     name: "ApproveCircular",
+    beforeEnter: (to, from, next) => {
+      if (
+        (localStorage.getItem("auth-token") ? true : false) &&
+        localStorage.getItem("role") === "HOD"
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
     component: () =>
       import(/* webpackChunkName: "templates" */ "@/views/ApproveCircular.vue"),
   },

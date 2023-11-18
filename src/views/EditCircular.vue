@@ -217,7 +217,12 @@ export default {
       const temp = ["occurrence_date", "venue", "starting_time", "ending_time"];
       try {
         const response = await axios.get(
-          "http://127.0.0.1:5000/circular?id=" + this.$route.query.ref_no
+          "http://127.0.0.1:5000/circular?id=" + this.$route.query.ref_no,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         for (const i of Object.keys(response.data)) {
           if (!temp.includes(i)) {
@@ -227,7 +232,11 @@ export default {
             this.options.push(i);
           }
         }
-        const res = await axios.get("http://127.0.0.1:5000/circular");
+        const res = await axios.get("http://127.0.0.1:5000/circular", {
+          headers: {
+            "Authentication-Token": localStorage.getItem("auth-token"),
+          },
+        });
         if (res.data.status !== "no") {
           this.ref_info = res.data;
         }
@@ -246,6 +255,7 @@ export default {
           {
             headers: {
               "Content-Type": "application/json",
+              "Authentication-Token": localStorage.getItem("auth-token"),
             },
           }
         );

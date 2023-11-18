@@ -99,7 +99,12 @@ export default {
     loader: async function () {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:5000/circular?id=" + this.$route.query.id
+          "http://127.0.0.1:5000/circular?id=" + this.$route.query.id,
+          {
+            headers: {
+              "Authentication-Token": localStorage.getItem("auth-token"),
+            },
+          }
         );
         // console.log(response);
         this.info = response.data;
