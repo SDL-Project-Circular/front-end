@@ -1,7 +1,17 @@
 <template>
   <div class="circular mt-4 container">
-    <h1 class="mb-4" style="text-align: center">POSTED CIRCULARS</h1>
+    <h1 v-if="resultQuery.length > 0" class="mb-4" style="text-align: center">
+      POSTED CIRCULARS
+    </h1>
+    <h1
+      v-if="resultQuery.length === 0"
+      class="mb-4 mt-4"
+      style="text-align: center"
+    >
+      No posts yet!
+    </h1>
     <SearchBar
+      v-if="resultQuery.length > 0"
       style="display: block; margin-right: auto; margin-left: auto"
       @search="handleSearch"
     />
@@ -89,11 +99,17 @@ export default {
           setTimeout(() => {
             this.error.err = false;
           }, 4000);
-        } else {
-          console.log(response.data.status);
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     createCard: async function () {
@@ -112,7 +128,15 @@ export default {
           );
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     handleSearch(search) {
@@ -144,7 +168,6 @@ export default {
       return capitalized.join(" ");
     },
     slice: function (date) {
-      console.log(date);
       var sliced = date.split(" ").slice(1, 4);
       return sliced.join(" ");
     },

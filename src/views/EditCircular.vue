@@ -170,6 +170,7 @@
     >
       FORWARD HOD
     </v-btn>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
@@ -177,9 +178,10 @@
 import axios from "axios";
 import FrontendDatePicker from "@/components/DatePicker.vue";
 import FrontendTimeRange from "@/components/TimeRange.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 export default {
   name: "UseTemplate",
-  components: { FrontendDatePicker, FrontendTimeRange },
+  components: { FrontendDatePicker, FrontendTimeRange, ErrorMessage },
   data() {
     return {
       info: {
@@ -203,6 +205,10 @@ export default {
       ],
       ref_info: [],
       options: [],
+      error: {
+        err: false,
+        message: "",
+      },
     };
   },
   created() {
@@ -241,7 +247,15 @@ export default {
           this.ref_info = res.data;
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     generate: async function () {
@@ -263,7 +277,15 @@ export default {
           window.location = "/home";
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     handleDate(dateAdd) {

@@ -1,7 +1,10 @@
 <template>
   <div class="templates container">
-    <h1 style="text-align: center" class="mb-4">Templates</h1>
+    <h1 v-if="info.length > 0" style="text-align: center" class="mb-4">
+      Templates
+    </h1>
     <SearchBar
+      v-if="info.length > 0"
       @search="handleSearch"
       style="display: block; margin-right: auto; margin-left: auto"
     />
@@ -40,7 +43,9 @@
         </v-btn>
       </div>
     </router-link>
-    <h1 v-if="info.length === 0" style="text-align: center">No content yet!</h1>
+    <h1 class="mt-4" v-if="info.length === 0" style="text-align: center">
+      No templates created!
+    </h1>
     <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
@@ -101,12 +106,14 @@ export default {
           this.info = response.data;
         }
       } catch (error) {
-        if (error.code === "ERR_NETWORK") {
+        if (error.response.status === 401) {
           this.error.err = true;
-          this.error.message = error.message;
+          this.error.message = "You are not authorized!";
           setTimeout(() => {
-            this.error.err = false;
-          }, 2000);
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
         }
       }
     },
@@ -122,11 +129,17 @@ export default {
         );
         if (response.data.status == "success") {
           this.createCard();
-        } else {
-          console.log(response.data.status);
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     handleSearch(search) {

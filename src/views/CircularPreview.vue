@@ -82,17 +82,23 @@
         PRINT
       </v-btn>
     </div>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 export default {
   name: "FrontendTemplatePreview",
-
+  components: { ErrorMessage },
   data() {
     return {
       info: [],
+      error: {
+        err: false,
+        message: "",
+      },
     };
   },
   methods: {
@@ -109,7 +115,15 @@ export default {
         // console.log(response);
         this.info = response.data;
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     printIt: function () {

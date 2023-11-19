@@ -20,10 +20,14 @@
     <v-window v-model="tab">
       <v-window-item>
         <SearchBar
+          v-if="resultQuery.length > 0"
           @search="handleSearch1"
           style="display: block; margin-right: auto; margin-left: auto"
         />
         <br />
+        <h2 style="text-align: center" v-if="resultQuery.length === 0">
+          No posts yet!
+        </h2>
         <v-card
           elevation="20"
           class="mx-auto mb-4"
@@ -62,9 +66,17 @@
       <v-window-item>
         <SearchBar
           @search="handleSearch2"
+          v-if="pendingResultQuery.length > 0"
           style="display: block; margin-right: auto; margin-left: auto"
         />
         <br />
+        <h2
+          class="mt-4"
+          style="text-align: center"
+          v-if="pendingResultQuery.length === 0"
+        >
+          No posts awaiting approval/action!
+        </h2>
         <v-card
           elevation="20"
           class="mx-auto mb-4"
@@ -129,12 +141,18 @@
             </FrontendConfirmDelete>
             <v-btn
               v-if="i.status === 'Rejected'"
-              class="white--text"
+              class="white--text mr-3"
               color="primary"
               @click="editButton(i.ref_no)"
             >
               Edit
             </v-btn>
+            <FrontendConfirmDelete
+              v-if="i.status === 'Rejected'"
+              :action="'delete'"
+              :msg="'circular ' + i.circular_name"
+              @deleted="HandleDelete(i.ref_no)"
+            />
           </v-card-actions>
         </v-card>
       </v-window-item>
@@ -206,12 +224,14 @@ export default {
           );
         }
       } catch (error) {
-        if (error.code === "ERR_NETWORK") {
+        if (error.response.status === 401) {
           this.error.err = true;
-          this.error.message = error.message;
+          this.error.message = "You are not authorized!";
           setTimeout(() => {
-            this.error.err = false;
-          }, 2000);
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
         }
       }
     },
@@ -241,7 +261,6 @@ export default {
       try {
         const response = await axios.delete(
           "http://127.0.0.1:5000/circular?ref_no=" + ref_no,
-          null,
           {
             headers: {
               "Authentication-Token": localStorage.getItem("auth-token"),

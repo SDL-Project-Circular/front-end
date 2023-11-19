@@ -191,12 +191,14 @@ export default {
           window.location = "/templatepage";
         }
       } catch (error) {
-        if (error.code === "ERR_NETWORK") {
+        if (error.response.status === 401) {
           this.error.err = true;
-          this.error.message = error.message;
+          this.error.message = "You are not authorized!";
           setTimeout(() => {
-            this.error.err = false;
-          }, 2000);
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
         }
       }
     },

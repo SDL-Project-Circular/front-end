@@ -1,7 +1,17 @@
 <template>
   <div class="circular mt-2 container">
-    <h1 style="text-align: center">Pending</h1>
+    <h1 v-if="pendingResultQuery.length > 0" style="text-align: center">
+      Pending
+    </h1>
+    <h1
+      class="mt-4"
+      v-if="pendingResultQuery.length === 0"
+      style="text-align: center"
+    >
+      No posts with pending actions!
+    </h1>
     <SearchBar
+      v-if="pendingResultQuery.length > 0"
       style="display: block; margin-right: auto; margin-left: auto"
       @search="handleSearch"
     />
@@ -43,20 +53,26 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <ErrorMessage v-if="error.err" :error="error.message" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import SearchBar from "@/components/SearchBar.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 export default {
   name: "ApproveCircular",
-  components: { SearchBar },
+  components: { SearchBar, ErrorMessage },
   data() {
     return {
       searchQuery: null,
       info: [],
       pending: [],
+      error: {
+        err: false,
+        message: "",
+      },
     };
   },
 
@@ -84,7 +100,15 @@ export default {
           );
         }
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     declinePost: async function (ref_no) {
@@ -99,8 +123,16 @@ export default {
           }
         );
         this.createCard();
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     approvePost: async function (ref_no) {
@@ -111,8 +143,16 @@ export default {
           },
         });
         this.createCard();
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
   },

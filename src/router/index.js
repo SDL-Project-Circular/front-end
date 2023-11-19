@@ -88,7 +88,7 @@ const routes = [
       if (
         (localStorage.getItem("auth-token") ? true : false) &&
         (localStorage.getItem("role") === "admin" ||
-          localStorage.getItem("role") === "admin")
+          localStorage.getItem("role") === "HOD")
       ) {
         next();
       } else {

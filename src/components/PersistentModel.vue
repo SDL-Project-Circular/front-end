@@ -64,8 +64,15 @@ export default {
         });
         this.info = response.data;
       } catch (error) {
-        this.error.err = true;
-        this.error.message = error.message;
+        if (error.response.status === 401) {
+          this.error.err = true;
+          this.error.message = "You are not authorized!";
+          setTimeout(() => {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("role");
+            window.location = "/";
+          }, 1300);
+        }
       }
     },
     clicker: function () {
