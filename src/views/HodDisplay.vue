@@ -1,17 +1,13 @@
 <template>
   <div class="circular mt-4 container">
-    <h1 v-if="resultQuery.length > 0" class="mb-4" style="text-align: center">
+    <h1 v-if="info.length > 0" class="mb-4" style="text-align: center">
       POSTED CIRCULARS
     </h1>
-    <h1
-      v-if="resultQuery.length === 0"
-      class="mb-4 mt-4"
-      style="text-align: center"
-    >
+    <h1 v-if="info.length === 0" class="mb-4 mt-4" style="text-align: center">
       No posts yet!
     </h1>
     <SearchBar
-      v-if="resultQuery.length > 0"
+      v-if="info.length > 0"
       style="display: block; margin-right: auto; margin-left: auto"
       @search="handleSearch"
     />

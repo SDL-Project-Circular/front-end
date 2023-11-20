@@ -1,17 +1,11 @@
 <template>
   <div class="circular mt-2 container">
-    <h1 v-if="pendingResultQuery.length > 0" style="text-align: center">
-      Pending
-    </h1>
-    <h1
-      class="mt-4"
-      v-if="pendingResultQuery.length === 0"
-      style="text-align: center"
-    >
+    <h1 v-if="pending.length > 0" style="text-align: center">Pending</h1>
+    <h1 class="mt-4" v-if="pending.length === 0" style="text-align: center">
       No posts with pending actions!
     </h1>
     <SearchBar
-      v-if="pendingResultQuery.length > 0"
+      v-if="pending.length > 0"
       style="display: block; margin-right: auto; margin-left: auto"
       @search="handleSearch"
     />

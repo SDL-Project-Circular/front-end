@@ -20,12 +20,12 @@
     <v-window v-model="tab">
       <v-window-item>
         <SearchBar
-          v-if="resultQuery.length > 0"
+          v-if="info.length > 0"
           @search="handleSearch1"
           style="display: block; margin-right: auto; margin-left: auto"
         />
         <br />
-        <h2 style="text-align: center" v-if="resultQuery.length === 0">
+        <h2 style="text-align: center" v-if="info.length === 0">
           No posts yet!
         </h2>
         <v-card
@@ -66,15 +66,11 @@
       <v-window-item>
         <SearchBar
           @search="handleSearch2"
-          v-if="pendingResultQuery.length > 0"
+          v-if="pending.length > 0"
           style="display: block; margin-right: auto; margin-left: auto"
         />
         <br />
-        <h2
-          class="mt-4"
-          style="text-align: center"
-          v-if="pendingResultQuery.length === 0"
-        >
+        <h2 class="mt-4" style="text-align: center" v-if="pending.length === 0">
           No posts awaiting approval/action!
         </h2>
         <v-card
